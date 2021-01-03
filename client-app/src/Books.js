@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql ,useMutation } from '@apollo/client';
 
 const Get_Books = gql`
   query GetInfo {
@@ -10,15 +10,29 @@ const Get_Books = gql`
     }
   }
 `;
+
+const Add_Books = gql`
+  mutation addBooks($title: String!,$author: String!,$age: String!) {
+    addBooks(
+      input:{ title: $title ,author: $author , age:$age}
+      ){
+      title
+      author
+      age
+    }
+  }
+`;
+
 export const Books = () => {
 
+
+    const [addbookss] = useMutation(Add_Books);
     const { loading, error, data } = useQuery(Get_Books);
 
     if (loading) return <h2>Loading...</h2>;
     if (error) return <h2>Error :(</h2>;
 
-    console.log(data);
-    const { books } = data;
+    const {books} = data;
     return (
         <div>
             <h2>BOOK Info</h2>
@@ -46,6 +60,10 @@ export const Books = () => {
                     <tr><td colSpan="3"><b> Data Coming from GQL Server By ali butt</b></td></tr>
                 </tfoot>
             </table>
+            <button 
+            onClick={()=>addbookss({variables:{
+              title:"samina",author:"kausar",age:"50"}
+              })}>Add DATA into table</button>
         </div>
     )
 }
